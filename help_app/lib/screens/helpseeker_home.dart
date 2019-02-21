@@ -43,7 +43,9 @@ class _HelpSeekerHomeState extends State<HelpSeekerHome> {
                 color: Colors.teal,
                 textColor: Colors.white,
                 child: Text("View Camps",style: TextStyle(fontSize: 20.0)),
-                onPressed: () {},
+                onPressed: () {
+                  _navigateTo('/view_camps');
+                },
               ),
               Padding(
                 padding: EdgeInsets.only(top: 30.0),
@@ -66,6 +68,6 @@ class _HelpSeekerHomeState extends State<HelpSeekerHome> {
   }
 
   void _navigateTo(String routeName) {
-    Navigator.of(context).pushNamed('/request_help'); //2
+    Navigator.of(context).pushNamed(routeName); //2
   }
 }

@@ -206,6 +206,7 @@ class _HomePageState extends State<MyHomePage> {
           prefs.setString('first_name', user.first_name);
           prefs.setString('last_name', user.last_name);
           prefs.setString('type', user.type);
+          prefs.setString('email', user.email);
 
           _navigateTo('/help_seeker_home');
 

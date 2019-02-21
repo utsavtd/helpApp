@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:help_app/config/app_settings.config.dart';
 import 'package:help_app/screens/helpseeker_home.dart';
 import 'package:help_app/screens/request_help.dart';
+import 'package:help_app/screens/view_camps.dart';
 //import 'routes.dart';
 import 'screens/home.dart';
 import 'screens/register.dart';
@@ -23,13 +24,14 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'HelpApp',
       theme: ThemeData(primarySwatch: Colors.teal),
-      initialRoute: '/help_list',
+      initialRoute: 'view_camps',
       routes: {
         '/register' :  (BuildContext context) =>  RegisterPage(),
         '/forgot_password' :  (BuildContext context) =>  ForgotPassword(),
         '/help_list' :  (BuildContext context) =>  HelpListPage(),
         '/help_seeker_home' :  (BuildContext context) =>  HelpSeekerHome(),
         '/request_help' :  (BuildContext context) =>  RequestHelp(),
+        '/view_camps' :  (BuildContext context) =>  ViewCamps(),
 
         '/' :          (BuildContext context) =>  MyHomePage(),
       },

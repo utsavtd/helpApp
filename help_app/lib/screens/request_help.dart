@@ -1,4 +1,11 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
+import 'package:help_app/models/HelpRequests.dart';
+import 'package:help_app/models/User.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class RequestHelp extends StatefulWidget {
@@ -7,15 +14,18 @@ class RequestHelp extends StatefulWidget {
 }
 
 class _RequestHelpState extends State<RequestHelp> {
-  double timeDilation=1.0;
-  bool foodCheckBoxValue = false;
+  double timeDilation = 1.0;
+  bool foodCheckBoxValue = true;
   bool shelterCheckBoxValue = false;
   bool clothCheckBoxValue = false;
-  String currentlySelectedHelpRequest="";
+  String currentlySelectedHelpRequest = "";
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+
       appBar: AppBar(
         title: Text('Request Help'),
       ),
@@ -44,13 +54,12 @@ class _RequestHelpState extends State<RequestHelp> {
                 value: foodCheckBoxValue,
                 onChanged: (bool value) {
                   setState(() {
-                    currentlySelectedHelpRequest="food";
+                    currentlySelectedHelpRequest = "food";
                     foodCheckBoxValue = value;
-                    if(value==true){
-                      clothCheckBoxValue=false;
-                      shelterCheckBoxValue=false;
+                    if (value == true) {
+                      clothCheckBoxValue = false;
+                      shelterCheckBoxValue = false;
                     }
-
                   });
                 },
                 secondary: const Icon(Icons.fastfood),
@@ -66,11 +75,11 @@ class _RequestHelpState extends State<RequestHelp> {
                 value: clothCheckBoxValue,
                 onChanged: (bool value) {
                   setState(() {
-                    currentlySelectedHelpRequest="cloth";
+                    currentlySelectedHelpRequest = "cloth";
                     clothCheckBoxValue = value;
-                    if(value==true){
-                      foodCheckBoxValue=false;
-                      shelterCheckBoxValue=false;
+                    if (value == true) {
+                      foodCheckBoxValue = false;
+                      shelterCheckBoxValue = false;
                     }
                   });
                 },
@@ -87,13 +96,12 @@ class _RequestHelpState extends State<RequestHelp> {
                 value: shelterCheckBoxValue,
                 onChanged: (bool value) {
                   setState(() {
-                    currentlySelectedHelpRequest="shelter";
+                    currentlySelectedHelpRequest = "shelter";
                     shelterCheckBoxValue = value;
-                    if(value==true){
-                      foodCheckBoxValue=false;
-                      clothCheckBoxValue=false;
+                    if (value == true) {
+                      foodCheckBoxValue = false;
+                      clothCheckBoxValue = false;
                     }
-
                   });
                 },
                 secondary: const Icon(Icons.home),
@@ -107,7 +115,7 @@ class _RequestHelpState extends State<RequestHelp> {
                 minWidth: 150.00,
                 color: Colors.teal,
                 textColor: Colors.white,
-                child: Text("Submit",style: TextStyle(fontSize: 20.00),),
+                child: Text("Submit", style: TextStyle(fontSize: 20.00),),
                 onPressed: _CreateHelpRequest,
               ),
               Padding(
@@ -121,12 +129,40 @@ class _RequestHelpState extends State<RequestHelp> {
     );
   }
 
- void  _CreateHelpRequest() async {
-   SharedPreferences prefs = await SharedPreferences.getInstance();
-   print(prefs.getString('id'));
-   print(currentlySelectedHelpRequest);
+  void _CreateHelpRequest() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await SendHelpRequest(prefs.getString('id'), currentlySelectedHelpRequest);
+  }
 
+  Future<String> SendHelpRequest(String user_id, String helpRequest) async {
+    GlobalConfiguration cfg = new GlobalConfiguration();
+    final _headers = {'Content-Type': 'application/json'};
 
+    String _serviceUrl = cfg.getString('server') + '/helprequests/create/';
+    Map body = Map();
+    body['user_id'] = user_id;
+    body['type'] = helpRequest;
+    var jsonBody = json.encode(body);
+    final response =
+    await http.post(_serviceUrl, headers: _headers, body: jsonBody);
+    if (response.statusCode == 200) {
+      showMessage("Help requested succesfully");
+      setState(() {
+        foodCheckBoxValue = true;
+        shelterCheckBoxValue = false;
+        clothCheckBoxValue = false;
+        currentlySelectedHelpRequest = "";
+      });
+    } else {
+      showMessage("help request failed");
+      return null;
+    }
+  }
 
+  void showMessage(String message, [MaterialColor color = Colors.red]) {
+    _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(backgroundColor: color, content: new Text(message)));
   }
 }
+
+
