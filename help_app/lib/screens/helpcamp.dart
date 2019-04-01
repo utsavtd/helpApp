@@ -120,8 +120,17 @@ class HelpCampState extends State<HelpCampPage> {
         HelpCamp helpCamp = HelpCamp('', nameController.text, descriptionController.text, addressController.text, first.coordinates.latitude, first.coordinates.longitude);
         helpCamp = await addHelpCampRequest(helpCamp);
         if(helpCamp!=null){
-          showMessage("Help camp added successfully");
-          _navigateTo('/helper_home');
+          sleep(const Duration(seconds:3));
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          print(prefs.getString('type'));
+
+          if(prefs.getString('type')=='admin'){
+            _navigateTo('/admin_home');
+
+          }else{
+            _navigateTo('/helper_home');
+
+          }
 
 
         }else{
@@ -159,7 +168,6 @@ class HelpCampState extends State<HelpCampPage> {
         helpCamp =
             HelpCamp(c['_id'], c['name'], c['description'], c['address'], null, null);
         showMessage("Help camp added");
-        sleep(const Duration(seconds:3));
 
         return helpCamp;
       } else {

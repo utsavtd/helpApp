@@ -217,6 +217,11 @@ class _HomePageState extends State<MyHomePage> {
           _navigateTo('/helper_home');
 
         }
+        if(user.type=="admin"){
+
+          _navigateTo('/admin_home');
+
+        }
         return user;
       }else
         {

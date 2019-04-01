@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:help_app/config/app_settings.config.dart';
+import 'package:help_app/screens/admin_home.dart';
 import 'package:help_app/screens/helper_home.dart';
 import 'package:help_app/screens/helpseeker_home.dart';
 import 'package:help_app/screens/request_help.dart';
@@ -10,6 +11,7 @@ import 'screens/home.dart';
 import 'screens/register.dart';
 import 'screens/forgot_password.dart';
 import 'screens/help_list.dart';
+import 'screens/AddNotification.dart';
 import 'package:global_configuration/global_configuration.dart';
 
 
@@ -36,6 +38,9 @@ class MyApp extends StatelessWidget {
         '/request_help' :  (BuildContext context) =>  RequestHelp(),
         '/view_camps' :  (BuildContext context) =>  ViewCamps(),
         '/helper_home' :  (BuildContext context) =>  HelperHome(),
+        '/admin_home' :  (BuildContext context) =>  AdminHome(),
+        '/add_notification' :  (BuildContext context) =>  NotificationPage(),
+
 
         '/' :          (BuildContext context) =>  MyHomePage(),
       },
