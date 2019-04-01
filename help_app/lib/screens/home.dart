@@ -182,6 +182,7 @@ class _HomePageState extends State<MyHomePage> {
 
   Future<User> Login(User user) async {
     GlobalConfiguration cfg = new GlobalConfiguration();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String _serviceUrl=cfg.getString('server')+'/users/signIn/';
     final _headers = {'Content-Type': 'application/json'};
@@ -198,17 +199,22 @@ class _HomePageState extends State<MyHomePage> {
       if (response.statusCode == 200) {
         var c = json.decode(response.body);
         user=User.fromJson(c['payload']);
+        print('userid');
+        print(user.id);
+        prefs.setString('id', user.id);
+        prefs.setString('first_name', user.first_name);
+        prefs.setString('last_name', user.last_name);
+        prefs.setString('type', user.type);
+        prefs.setString('email', user.email);
+
         if(user.type=="help seeker"){
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          print('userid');
-          print(user.id);
-          prefs.setString('id', user.id);
-          prefs.setString('first_name', user.first_name);
-          prefs.setString('last_name', user.last_name);
-          prefs.setString('type', user.type);
-          prefs.setString('email', user.email);
 
           _navigateTo('/help_seeker_home');
+
+        }
+        if(user.type=="helper"){
+
+          _navigateTo('/helper_home');
 
         }
         return user;

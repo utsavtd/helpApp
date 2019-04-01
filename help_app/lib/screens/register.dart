@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -196,7 +197,10 @@ class _RegisterState extends State<RegisterPage> {
   }
 
   Future<User> Register(User user) async {
-    String _serviceUrl = 'http://10.0.2.2:3001/users/signUp/';
+    GlobalConfiguration cfg = new GlobalConfiguration();
+
+    String _serviceUrl=cfg.getString('server')+'/users/signUp/';
+
     final _headers = {'Content-Type': 'application/json'};
 
     try {

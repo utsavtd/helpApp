@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
 
 class ViewCamps extends StatefulWidget {
   @override
@@ -16,21 +19,29 @@ class _ViewCampsState extends State<ViewCamps> {
   void initState() {
     super.initState();
     print("initial position");
+
     showMap = true;
   }
 
   addMarkers() {
-    List<LatLng> campList = [
-      LatLng(43.6532, -79.3832),
-      LatLng(43.7013812, -79.4108814),
-      LatLng(43.6598275, -79.364916),
-    ];
-    for (int i = 0; i < campList.length; i++) {
-      mapController.addMarker(MarkerOptions(
-          position: LatLng(campList[i].latitude, campList[i].longitude),
-          draggable: false,
-          infoWindowText: InfoWindowText('Help Camp', 'Help camp info')));
-    }
+    GlobalConfiguration cfg = new GlobalConfiguration();
+
+    String _serviceUrl = cfg.getString('server') + '/helpcamp/list/';
+
+
+    http.get(_serviceUrl).then((value){
+      var jsonCamp = json.decode(value.body);
+      print(jsonCamp);
+      for (var helpCamp in jsonCamp) {
+        mapController.addMarker(MarkerOptions(
+            position: LatLng(helpCamp['lat'], helpCamp['lang']),
+            draggable: false,
+            infoWindowText: InfoWindowText(helpCamp['name'], helpCamp['address'])));
+      }
+
+    });
+
+
   }
 
   @override
@@ -46,7 +57,8 @@ class _ViewCampsState extends State<ViewCamps> {
             width: MediaQuery.of(context).size.width,
             child: showMap
                 ? GoogleMap(
-                    onMapCreated: _onMapCreated,
+                    mapType: MapType.normal,
+                    onMapCreated:  _onMapCreated,
                     myLocationEnabled: true,
                     initialCameraPosition: CameraPosition(
                         target: LatLng(43.6532, -79.3832), zoom: 12),
@@ -60,13 +72,13 @@ class _ViewCampsState extends State<ViewCamps> {
     );
   }
 
-  void _onMapCreated(GoogleMapController controller) {
+  void _onMapCreated(GoogleMapController controller)  {
     print('_onMapCreated');
 
     setState(() {
-      print('set stte called');
+      print('set state called');
       mapController = controller;
-      addMarkers();
+       addMarkers();
     });
   }
 }

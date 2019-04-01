@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
+import 'package:help_app/models/HelpRequests.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -9,15 +11,26 @@ class HelpListPage extends StatefulWidget {
 }
 
 class HelpListState extends State<HelpListPage> {
+
   Future<List<HelpRequest>> _getHelp() async {
+    GlobalConfiguration cfg = new GlobalConfiguration();
+
+    String _serviceUrl = cfg.getString('server') + '/helprequests/list/';
+
+
     var data = await http
-        .get('https://next.json-generator.com/api/json/get/41AuM-mV8');
+        .get(_serviceUrl);
+
     var jsonHelp = json.decode(data.body);
+    print(jsonHelp);
+
     List<HelpRequest> helps = [];
 
     for (var h in jsonHelp) {
+      print("added"+h['user_id']['first_name']);
+
       HelpRequest help =
-          HelpRequest(h['_id'], h['company'], h['address'], h['about'],h['picture']);
+          HelpRequest(h['_id'], h['type'], h['user_id']['first_name']+' '+h['user_id']['last_name']);
       helps.add(help);
     }
     return helps;
@@ -42,9 +55,9 @@ class HelpListState extends State<HelpListPage> {
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     leading: Icon(Icons.person_pin),
-                    title: Text(snapshot.data[index].title),
-                    //subtitle: Text(snapshot.data[index].description),
-                    trailing: Text("pending",style:TextStyle(color: Colors.red,fontSize: 18.0,fontWeight: FontWeight.bold)),
+                    title: Text(snapshot.data[index].type+' '+ " request by"),
+                    subtitle: Text(snapshot.data[index].user,style:TextStyle(color: Colors.red,fontSize: 18.0,fontWeight: FontWeight.bold)),
+                    //trailing: Text(),
                   );
                 });
         }
@@ -57,23 +70,4 @@ class HelpListState extends State<HelpListPage> {
       body: Container(child: futureListBuilder),
     );
   }
-}
-
-class HelpRequest {
-  final String id;
-  final String title;
-  final String address;
-  final String description;
-  final String image;
-
-  HelpRequest(this.id, this.title, this.address, this.description, this.image);
-
-  HelpRequest.froJson(Map json):
-    id=json['id'],
-    title=json['title'],
-    address=json['address'],
-    description=json['description'],
-    image=json['image'];
-
-
 }

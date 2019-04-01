@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:help_app/config/app_settings.config.dart';
+import 'package:help_app/screens/helper_home.dart';
 import 'package:help_app/screens/helpseeker_home.dart';
 import 'package:help_app/screens/request_help.dart';
 import 'package:help_app/screens/view_camps.dart';
+import 'package:help_app/screens/helpcamp.dart';
 //import 'routes.dart';
 import 'screens/home.dart';
 import 'screens/register.dart';
@@ -29,9 +31,11 @@ class MyApp extends StatelessWidget {
         '/register' :  (BuildContext context) =>  RegisterPage(),
         '/forgot_password' :  (BuildContext context) =>  ForgotPassword(),
         '/help_list' :  (BuildContext context) =>  HelpListPage(),
+        '/add_help_camp' :  (BuildContext context) =>  HelpCampPage(),
         '/help_seeker_home' :  (BuildContext context) =>  HelpSeekerHome(),
         '/request_help' :  (BuildContext context) =>  RequestHelp(),
         '/view_camps' :  (BuildContext context) =>  ViewCamps(),
+        '/helper_home' :  (BuildContext context) =>  HelperHome(),
 
         '/' :          (BuildContext context) =>  MyHomePage(),
       },
