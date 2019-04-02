@@ -13,6 +13,7 @@ import 'screens/forgot_password.dart';
 import 'screens/help_list.dart';
 import 'screens/AddNotification.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:help_app/screens/Notifications.dart';
 
 
 void main()  {
@@ -40,6 +41,8 @@ class MyApp extends StatelessWidget {
         '/helper_home' :  (BuildContext context) =>  HelperHome(),
         '/admin_home' :  (BuildContext context) =>  AdminHome(),
         '/add_notification' :  (BuildContext context) =>  NotificationPage(),
+        '/list_notifications' :  (BuildContext context) =>  NotificationListPage(),
+
 
 
         '/' :          (BuildContext context) =>  MyHomePage(),

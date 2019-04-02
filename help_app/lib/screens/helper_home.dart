@@ -57,7 +57,9 @@ class _HelperHomeState extends State<HelperHome> {
                 color: Colors.teal,
                 textColor: Colors.white,
                 child: Text("View Notifications",style: TextStyle(fontSize: 20.0),),
-                onPressed: () {},
+                onPressed: () {
+                  _navigateTo('/list_notifications');
+                },
               ),
 
             ],

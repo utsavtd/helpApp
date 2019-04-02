@@ -57,7 +57,9 @@ class _HelpSeekerHomeState extends State<HelpSeekerHome> {
                 color: Colors.teal,
                 textColor: Colors.white,
                 child: Text("View Notifications",style: TextStyle(fontSize: 20.0),),
-                onPressed: () {},
+                onPressed: () {
+                  _navigateTo('/list_notifications');
+                },
               ),
 
             ],
