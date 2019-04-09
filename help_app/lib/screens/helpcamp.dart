@@ -28,6 +28,7 @@ class HelpCampState extends State<HelpCampPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         title: Text('New help camp'),
       ),
