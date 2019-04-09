@@ -36,7 +36,8 @@ class _ViewCampsState extends State<ViewCamps> {
         mapController.addMarker(MarkerOptions(
             position: LatLng(helpCamp['lat'], helpCamp['lang']),
             draggable: false,
-            infoWindowText: InfoWindowText(helpCamp['name'], helpCamp['address'])));
+
+            infoWindowText: InfoWindowText(helpCamp['name']+' @'+helpCamp['address'], helpCamp['description'])));
       }
 
     });
