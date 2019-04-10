@@ -11,15 +11,12 @@ class HelpListPage extends StatefulWidget {
 }
 
 class HelpListState extends State<HelpListPage> {
-
   Future<List<HelpRequest>> _getHelp() async {
     GlobalConfiguration cfg = new GlobalConfiguration();
 
     String _serviceUrl = cfg.getString('server') + '/helprequests/list/';
 
-
-    var data = await http
-        .get(_serviceUrl);
+    var data = await http.get(_serviceUrl);
 
     var jsonHelp = json.decode(data.body);
     print(jsonHelp);
@@ -27,10 +24,13 @@ class HelpListState extends State<HelpListPage> {
     List<HelpRequest> helps = [];
 
     for (var h in jsonHelp) {
-      print("added"+h['user_id']['first_name']);
+      print("added" + h['user_id']['first_name']);
 
-      HelpRequest help =
-          HelpRequest(h['_id'], h['type'], h['user_id']['first_name']+' '+h['user_id']['last_name']);
+      HelpRequest help = HelpRequest(
+          h['_id'],
+          h['type'],
+          h['user_id']['first_name'] + ' ' + h['user_id']['last_name'],
+          h['address']);
       helps.add(help);
     }
     return helps;
@@ -38,7 +38,6 @@ class HelpListState extends State<HelpListPage> {
 
   @override
   Widget build(BuildContext context) {
-
     var futureListBuilder = FutureBuilder(
       future: this._getHelp(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -55,9 +54,34 @@ class HelpListState extends State<HelpListPage> {
                 itemBuilder: (BuildContext context, int index) {
                   return ListTile(
                     leading: Icon(Icons.person_pin),
-                    title: Text(snapshot.data[index].type+' '+ " request by"),
-                    subtitle: Text(snapshot.data[index].user,style:TextStyle(color: Colors.red,fontSize: 18.0,fontWeight: FontWeight.bold)),
-                    //trailing: Text(),
+                    title:
+                        Text(snapshot.data[index].type + ' ' + " request", style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold
+                        )),
+                    subtitle:
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                                 Text(snapshot.data[index].user,
+
+                                ),
+
+                            Padding(
+                                padding: EdgeInsets.all(2.0),
+                                child: Text("Address : "+snapshot.data[index].address,
+                                    style: TextStyle(
+                                        color: Colors.blue,
+                                        fontSize: 15.0,
+                                    )
+                                )
+                            ),
+
+
+                          ],
+                        )
+                    //trailing: Padding(padding:EdgeInsets.all(10.0),child: ,),
                   );
                 });
         }

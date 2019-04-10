@@ -18,21 +18,22 @@ class _RequestHelpState extends State<RequestHelp> {
   bool foodCheckBoxValue = true;
   bool shelterCheckBoxValue = false;
   bool clothCheckBoxValue = false;
-  String currentlySelectedHelpRequest = "";
+  String currentlySelectedHelpRequest = "food";
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  GlobalKey<FormState> key = GlobalKey();
+  TextEditingController addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-
+      resizeToAvoidBottomPadding: true,
       appBar: AppBar(
         title: Text('Request Help'),
       ),
       body: Container(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: ListView(
             children: <Widget>[
               Container(
                 padding: EdgeInsets.all(5.0),
@@ -109,19 +110,41 @@ class _RequestHelpState extends State<RequestHelp> {
               SizedBox(
                 height: 5.00,
               ),
+              Form(
+                  key: key,
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 20.00,bottom: 10.00),
+                    child: TextFormField(
+                      controller: addressController,
+                      decoration: InputDecoration(
+                          labelText: "Address",
+                          hintText: "Enter address",
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0))),
+                      keyboardType: TextInputType.text,
+                      validator: (String value) {
+                        if (value.length < 1) {
+                          return "Please enter address";
+                        }
+                      },
+                    ),
+                  )
+              ),
               MaterialButton(
                 elevation: 5.00,
                 height: 50.00,
                 minWidth: 150.00,
                 color: Colors.teal,
                 textColor: Colors.white,
-                child: Text("Submit", style: TextStyle(fontSize: 20.00),),
+                child: Text(
+                  "Submit",
+                  style: TextStyle(fontSize: 20.00),
+                ),
                 onPressed: _CreateHelpRequest,
               ),
               Padding(
                 padding: EdgeInsets.only(top: 30.0),
               ),
-
             ],
           ),
         ),
@@ -130,11 +153,15 @@ class _RequestHelpState extends State<RequestHelp> {
   }
 
   void _CreateHelpRequest() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await SendHelpRequest(prefs.getString('id'), currentlySelectedHelpRequest);
+
+    if (key.currentState.validate()) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await SendHelpRequest(
+          prefs.getString('id'), currentlySelectedHelpRequest,addressController.text);
+    }
   }
 
-  Future<String> SendHelpRequest(String user_id, String helpRequest) async {
+  Future<String> SendHelpRequest(String user_id, String helpRequest,address) async {
     GlobalConfiguration cfg = new GlobalConfiguration();
     final _headers = {'Content-Type': 'application/json'};
 
@@ -142,9 +169,10 @@ class _RequestHelpState extends State<RequestHelp> {
     Map body = Map();
     body['user_id'] = user_id;
     body['type'] = helpRequest;
+    body['address'] = address;
     var jsonBody = json.encode(body);
     final response =
-    await http.post(_serviceUrl, headers: _headers, body: jsonBody);
+        await http.post(_serviceUrl, headers: _headers, body: jsonBody);
     if (response.statusCode == 200) {
       showMessage("Help requested succesfully");
       setState(() {
@@ -164,5 +192,3 @@ class _RequestHelpState extends State<RequestHelp> {
         new SnackBar(backgroundColor: color, content: new Text(message)));
   }
 }
-
-
